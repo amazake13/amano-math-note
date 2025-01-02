@@ -1,3 +1,6 @@
+import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+
 export const pathJoin = (path: string, subPath: string) => {
   return (
     '/' +
@@ -7,4 +10,8 @@ export const pathJoin = (path: string, subPath: string) => {
       .filter((p) => p)
       .join('/')
   )
+}
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
 }

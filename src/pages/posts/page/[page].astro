@@ -1,55 +1,36 @@
 ---
-import {
-  getPostsByPage,
-  getRankedPosts,
-  getAllTags,
-  getNumberOfPages,
-  getPostsByPage,
-} from '../../../lib/notion/client.ts'
-import Layout from '../../../layouts/Layout.astro'
-import NoContents from '../../../components/NoContents.astro'
-import PostDate from '../../../components/PostDate.astro'
-import PostTags from '../../../components/PostTags.astro'
-import PostTitle from '../../../components/PostTitle.astro'
-import PostFeaturedImage from '../../../components/PostFeaturedImage.astro'
-import PostExcerpt from '../../../components/PostExcerpt.astro'
-import ReadMoreLink from '../../../components/ReadMoreLink.astro'
-import Pagination from '../../../components/Pagination.astro'
-import BlogPostsLink from '../../../components/BlogPostsLink.astro'
-import BlogTagsLink from '../../../components/BlogTagsLink.astro'
-import styles from '../../../styles/blog.module.css'
+import { getAllPosts, getAllTags, getRankedPosts } from '@/lib/notion/client.ts'
+import Layout from '@/layouts/Layout.astro'
+import NoContents from '@/components/NoContents.astro'
+import PostDate from '@/components/PostDate.astro'
+import PostTags from '@/components/PostTags.astro'
+import PostTitle from '@/components/PostTitle.astro'
+import PostFeaturedImage from '@/components/PostFeaturedImage.astro'
+import PostExcerpt from '@/components/PostExcerpt.astro'
+import ReadMoreLink from '@/components/ReadMoreLink.astro'
+import Pagination from '@/components/Pagination.astro'
+import styles from '@/styles/blog.module.css'
 
-export async function getStaticPaths() {
-  const numberOfPages = await getNumberOfPages()
-
-  let params = []
-  for (let i = 2; i <= numberOfPages; i++) {
-    params.push({ params: { page: i.toString() } })
-  }
-  return params
+export async function getStaticPaths({ paginate }) {
+  const allPosts = await getAllPosts()
+  const pageSize = 10
+  return paginate(allPosts, { pageSize: pageSize })
 }
 
-const { page } = Astro.params
+const { page } = Astro.props
 
-const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
-  getPostsByPage(parseInt(page, 10)),
-  getRankedPosts(),
-  getAllTags(),
-  getNumberOfPages(),
-])
+const { currentPage, lastPage } = page
+const [rankedPosts, tags] = await Promise.all([getRankedPosts(), getAllTags()])
 ---
 
-<Layout title={`Posts ${page}/${numberOfPages}`} path={`/posts/page/${page}`}>
+<Layout
+  title={`Posts ${currentPage}/${lastPage}`}
+  path={`/posts/page/${currentPage}`}
+>
   <div slot="main" class={styles.main}>
-    <header>
-      <div class="page-container">{page}/{numberOfPages}</div>
-    </header>
-
     {
-      posts.length === 0 ? (
-        <NoContents contents={posts} />
-      ) : (
-        posts.map((post) => (
+      page.data ? (
+        page.data.map((post) => (
           <div class={styles.post} key={post.Slug}>
             <PostDate post={post} />
             <PostTags post={post} />
@@ -59,33 +40,13 @@ const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
             <ReadMoreLink post={post} />
           </div>
         ))
+      ) : (
+        <NoContents />
       )
     }
 
     <footer>
-      <Pagination
-        currentPage={parseInt(page, 10)}
-        numberOfPages={numberOfPages}
-      />
+      <Pagination {...page} />
     </footer>
   </div>
-
-  <div slot="aside" class={styles.aside}>
-    <BlogPostsLink heading="Recommended" posts={rankedPosts} />
-    <BlogTagsLink heading="Categories" tags={tags} />
-  </div>
 </Layout>
-
-<style>
-  .page-container {
-    margin: 0;
-    line-height: 1.3;
-    font-size: 1.2rem;
-    font-weight: normal;
-  }
-  @media (max-width: 640px) {
-    .page-container {
-      font-size: 1.15rem;
-    }
-  }
-</style>

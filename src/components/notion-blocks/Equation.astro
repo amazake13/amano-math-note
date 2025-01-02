@@ -13,6 +13,7 @@ const { block } = Astro.props
   class="equation"
   set:html={katex.renderToString(block.Equation.Expression, {
     throwOnError: false,
+    displayMode: true,
   })}
 />
 

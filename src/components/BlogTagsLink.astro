@@ -15,9 +15,7 @@ const { heading, tags } = Astro.props
 <div class="blog-tags-link">
   <h2>{heading}</h2>
   {
-    tags.length === 0 ? (
-      <NoContents contents={tags} />
-    ) : (
+    tags ? (
       <ul>
         {tags.map((tag: SelectProperty) => (
           <li>
@@ -27,6 +25,8 @@ const { heading, tags } = Astro.props
           </li>
         ))}
       </ul>
+    ) : (
+      <NoContents contents={tags} />
     )
   }
 </div>
