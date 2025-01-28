@@ -57,6 +57,57 @@ export default {
           5: 'hsl(var(--chart-5))',
         },
       },
+      typography: (theme) => ({
+        DEFAULT: {
+          css: {
+            h1: {
+              color: theme('colors.foreground'),
+              fontSize: '2.25rem',
+              fontWeight: '700',
+              marginBottom: '1rem',
+            },
+            h2: {
+              color: theme('colors.foreground'),
+              fontSize: '1.875rem',
+              fontWeight: '700',
+              marginBottom: '0.75rem',
+            },
+            ul: {
+              listStyleType: 'disc',
+              paddingLeft: '1.5rem',
+              li: {
+                marginBottom: '0.5rem',
+              },
+            },
+            a: {
+              textDecoration: 'none', // 下線を削除
+              '&:hover': {
+                textDecoration: 'underline', // ホバー時に下線を追加（必要に応じて）
+              },
+            },
+            blockquote: {
+              borderLeftColor: theme('colors.gray.300'),
+              color: theme('colors.gray.700'),
+              paddingLeft: '1rem',
+            },
+            table: {
+              width: '100%',
+              borderCollapse: 'collapse',
+              th: {
+                borderBottomWidth: '2px',
+                borderBottomColor: theme('colors.gray.300'),
+                padding: '0.5rem',
+                textAlign: 'left',
+              },
+              td: {
+                borderBottomWidth: '1px',
+                borderBottomColor: theme('colors.gray.200'),
+                padding: '0.5rem',
+              },
+            },
+          },
+        },
+      }),
     },
   },
   plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],

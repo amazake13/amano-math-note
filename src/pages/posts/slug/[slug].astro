@@ -1,5 +1,5 @@
 ---
-import * as interfaces from '../../lib/interfaces.ts'
+import * as interfaces from '@/lib/interfaces.ts'
 import {
   getPosts,
   getAllPosts,
@@ -10,21 +10,21 @@ import {
   getAllTags,
   getAllBlocksByBlockId,
   downloadFile,
-} from '../../lib/notion/client.ts'
+} from '@/lib/notion/client.ts'
 import {
   getPostLink,
   filePath,
   extractTargetBlocks,
-} from '../../lib/blog-helpers.ts'
-import Layout from '../../layouts/Layout.astro'
-import PostDate from '../../components/PostDate.astro'
-import PostTags from '../../components/PostTags.astro'
-import PostTitle from '../../components/PostTitle.astro'
-import PostBody from '../../components/PostBody.astro'
-import PostRelativeLink from '../../components/PostRelativeLink.astro'
-import BlogPostsLink from '../../components/BlogPostsLink.astro'
-import BlogTagsLink from '../../components/BlogTagsLink.astro'
-import styles from '../../styles/blog.module.css'
+} from '@/lib/blog-helpers.ts'
+import Layout from '@/layouts/Layout.astro'
+import PostDate from '@/components/PostDate.astro'
+import PostTags from '@/components/PostTags.astro'
+import PostTitle from '@/components/PostTitle.astro'
+import PostBody from '@/components/PostBody.astro'
+import PostRelativeLink from '@/components/PostRelativeLink.astro'
+import BlogPostsLink from '@/components/BlogPostsLink.astro'
+import BlogTagsLink from '@/components/BlogTagsLink.astro'
+import styles from '@/styles/blog.module.css'
 
 export async function getStaticPaths() {
   const posts = await getAllPosts()
@@ -35,7 +35,7 @@ const { slug } = Astro.params
 
 const post = await getPostBySlug(slug)
 if (!post) {
-  throw new Error('Post not found. slug: ${slug}')
+  throw new Error(`Post not found. slug: ${slug}`)
 }
 
 const [blocks, allPosts, rankedPosts, recentPosts, tags, postsHavingSameTag] =
@@ -62,8 +62,8 @@ const fileAtacchedBlocks = extractTargetBlocks('image', blocks)
 await Promise.all(
   fileAtacchedBlocks
     .map(async (block) => {
-      const expiryTime = (block.Image || block.File).File.ExpiryTime
-      if (Date.parse(expiryTime) > Date.now()) {
+      const expiryTime = (block.Image || block.File)?.File?.ExpiryTime
+      if (expiryTime && Date.parse(expiryTime) > Date.now()) {
         return Promise.resolve(block)
       }
       return getBlock(block.Id)
@@ -72,7 +72,11 @@ await Promise.all(
       promise.then((block) => {
         let url!: URL
         try {
-          url = new URL((block.Image || block.File).File.Url)
+          const urlString = (block.Image || block.File)?.File?.Url
+          if (!urlString) {
+            throw new Error('Invalid file URL')
+          }
+          url = new URL(urlString)
         } catch (err) {
           console.log('Invalid file URL')
           return Promise.reject()
@@ -89,7 +93,10 @@ const nextPost = allPosts[currentPostIndex - 1]
 
 let ogImage = ''
 if (post.FeaturedImage && post.FeaturedImage.Url) {
-  ogImage = new URL(filePath(new URL(post.FeaturedImage.Url)), Astro.site)
+  ogImage = new URL(
+    filePath(new URL(post.FeaturedImage.Url)),
+    Astro.site
+  ).toString()
 }
 ---
 
@@ -99,11 +106,11 @@ if (post.FeaturedImage && post.FeaturedImage.Url) {
   path={getPostLink(post.Slug)}
   ogImage={ogImage}
 >
-  <div slot="main" class={styles.main}>
-    <div class={styles.post}>
+  <div slot="main" class="container mx-auto px-4 prose">
+    <div>
       <PostDate post={post} />
       <PostTags post={post} />
-      <PostTitle post={post} enableLink={false} />
+      <PostTitle post={post} />
       <PostBody blocks={blocks} />
       <PostTags post={post} />
 

@@ -14,10 +14,11 @@
     "format": "npx prettier --write .",
     "cache:fetch": "node scripts/blog-contents-cache.cjs",
     "cache:purge": "nx reset && rm -f tmp/*",
-    "_fetch-notion-blocks": "node scripts/retrieve-block-children.cjs"
+    "_fetch-notion-blocks": "node scripts/retrieve-block-children.cjs",
+    "preinstall": "npx only-allow pnpm"
   },
   "dependencies": {
-    "@astrojs/react": "^4.1.2",
+    "@astrojs/react": "^4.2.0",
     "@astrojs/rss": "^4.0.11",
     "@astrojs/tailwind": "^5.1.4",
     "@notionhq/client": "^2.2.5",
@@ -55,8 +56,8 @@
     "@types/metascraper-image": "^5.14.0",
     "@types/metascraper-title": "^5.14.0",
     "@types/prismjs": "^1.26.3",
-    "@types/react": "^19.0.2",
-    "@types/react-dom": "^19.0.2",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
     "@typescript-eslint/eslint-plugin": "^6.8.0",
     "@typescript-eslint/parser": "^6.8.0",
     "@typescript-eslint/typescript-estree": "^6.8.0",
@@ -85,5 +86,6 @@
     "includedScripts": [
       "_fetch-notion-blocks"
     ]
-  }
+  },
+  "packageManager": "pnpm@9.15.2"
 }

@@ -1,5 +1,6 @@
 ---
 import { getAllPosts, getAllTags, getRankedPosts } from '@/lib/notion/client.ts'
+import type { Post } from '@/lib/interfaces'
 import Layout from '@/layouts/Layout.astro'
 import NoContents from '@/components/NoContents.astro'
 import PostDate from '@/components/PostDate.astro'
@@ -9,29 +10,49 @@ import PostFeaturedImage from '@/components/PostFeaturedImage.astro'
 import PostExcerpt from '@/components/PostExcerpt.astro'
 import ReadMoreLink from '@/components/ReadMoreLink.astro'
 import Pagination from '@/components/Pagination.astro'
-import styles from '@/styles/blog.module.css'
 
-export async function getStaticPaths({ paginate }) {
-  const allPosts = await getAllPosts()
-  const pageSize = 10
-  return paginate(allPosts, { pageSize: pageSize })
+interface PaginateOptions {
+  pageSize: number
 }
 
-const { page } = Astro.props
+interface PaginatedPaths {
+  paths: Array<{ params: { page: string[] } }>
+  fallback: boolean
+}
 
-const { currentPage, lastPage } = page
+interface GetStaticPathsContext {
+  paginate: (items: Post[], options: PaginateOptions) => PaginatedPaths
+}
+
+export async function getStaticPaths({ paginate }: GetStaticPathsContext) {
+  const allPosts = await getAllPosts()
+  const pageSize = 10
+  return paginate(allPosts, { pageSize })
+}
+
+interface Props {
+  page: {
+    data: Post[]
+    currentPage: number
+    totalPages: number
+  }
+}
+
+const { page }: Props = Astro.props
+
+const { currentPage, totalPages } = page
 const [rankedPosts, tags] = await Promise.all([getRankedPosts(), getAllTags()])
 ---
 
 <Layout
-  title={`Posts ${currentPage}/${lastPage}`}
-  path={`/posts/page/${currentPage}`}
+  title={`Posts ${currentPage}/${totalPages}`}
+  path={`/posts/${currentPage}`}
 >
-  <div slot="main" class={styles.main}>
+  <div slot="main" class="container mx-auto px-4">
     {
       page.data ? (
-        page.data.map((post) => (
-          <div class={styles.post} key={post.Slug}>
+        page.data.map((post: Post) => (
+          <div class="max-w-2xl mx-auto my-8">
             <PostDate post={post} />
             <PostTags post={post} />
             <PostTitle post={post} />

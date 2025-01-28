@@ -1,5 +1,5 @@
 ---
-import type { SelectProperty } from '@/lib/interfaces.ts'
+import type { Post, SelectProperty } from '@/lib/interfaces.ts'
 import { getRankedPosts, getAllTags, getAllPosts } from '@/lib/notion/client.ts'
 import Layout from '@/layouts/Layout.astro'
 import NoContents from '@/components/NoContents.astro'
@@ -10,8 +10,7 @@ import PostFeaturedImage from '@/components/PostFeaturedImage.astro'
 import PostExcerpt from '@/components/PostExcerpt.astro'
 import ReadMoreLink from '@/components/ReadMoreLink.astro'
 import Pagination from '@/components/Pagination.astro'
-import styles from '../../../../../styles/blog.module.css'
-import '../../../../../styles/notion-color.css'
+import '@/styles/notion-color.css'
 
 export async function getStaticPaths({ paginate }) {
   const allTags = await getAllTags()
@@ -34,25 +33,27 @@ const { page } = Astro.props
 const { currentPage, lastPage } = page
 const currentTag =
   page.data && page.data[0]
-    ? (page.data[0].Tags.find((t) => t.name === tag) as SelectProperty)
+    ? (page.data[0].Tags.find(
+        (t: { name: any }) => t.name === tag
+      ) as SelectProperty)
     : null
 ---
 
 <Layout
   title={`Posts in ${tag} ${currentPage}/${lastPage}`}
-  path={`/posts/tag/${tag}/page/${currentPage}`}
+  path={`/posts/tag/${tag}/${currentPage}`}
 >
-  <div slot="main" class={styles.main}>
+  <div slot="main" class="container mx-auto px-4">
     <header>
-      <div class="tag-container">
+      <div>
         <span class={`tag ${currentTag ? currentTag.color : ''}`}>{tag}</span>
       </div>
     </header>
 
     {
       page.data ? (
-        page.data.map((post) => (
-          <div class={styles.post} key={post.Slug}>
+        page.data.map((post: Post) => (
+          <div>
             <PostDate post={post} />
             <PostTags post={post} />
             <PostTitle post={post} />
@@ -71,22 +72,3 @@ const currentTag =
     </footer>
   </div>
 </Layout>
-
-<style>
-  .tag-container {
-    margin: 0;
-    line-height: 1.3;
-    font-size: 1.2rem;
-    font-weight: normal;
-  }
-  @media (max-width: 640px) {
-    .tag-container {
-      font-size: 1.15rem;
-    }
-  }
-  .tag-container span.tag {
-    border-radius: 4px;
-    padding: 3px 9px;
-    background: var(--tag-bg-light-gray);
-  }
-</style>
