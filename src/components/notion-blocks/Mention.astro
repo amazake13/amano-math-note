@@ -1,5 +1,5 @@
 ---
-import { Post } from '../../lib/interfaces.ts'
+import type { Post, Emoji, FileObject } from '../../lib/interfaces.ts'
 import { getPostByPageId } from '../../lib/notion/client'
 import { getPostLink } from '../../lib/blog-helpers.ts'
 import '../../styles/notion-color.css'
@@ -11,7 +11,7 @@ export interface Props {
 
 const { pageId } = Astro.props
 
-let post: Post = null
+let post: Post | null = null
 if (pageId) {
   post = await getPostByPageId(pageId)
 }
@@ -19,33 +19,26 @@ if (pageId) {
 
 {
   post ? (
-    <a href={getPostLink(post.Slug)} class="link">
-      <>
-        <span class="icon">
-          {post.Icon && post.Icon.Type === 'emoji' ? (
-            post.Icon.Emoji
-          ) : post.Icon && post.Icon.Type === 'external' ? (
-            <img
-              src={post.Icon.Url}
-              class="notion-icon"
-              alt="Post title icon in a page link"
-            />
-          ) : (
-            '📄'
-          )}
-          <img src={arrow.src} class="icon-link" alt="Arrow icon of a page link" />
-        </span>
-        <span class="text">{post.Title}</span>
-      </>
+    <a
+      href={getPostLink(post.Slug)}
+      class="inline-flex items-center gap-1.5 font-medium text-muted-foreground hover:text-foreground transition-colors"
+    >
+      {post.Icon?.Type === 'emoji' ? (
+        <span class="text-base leading-none">{(post.Icon as Emoji).Emoji}</span>
+      ) : post.Icon?.Type === 'external' ? (
+        <img src={(post.Icon as FileObject).Url} class="w-4 h-4" alt="" />
+      ) : (
+        <span class="text-base leading-none">📄</span>
+      )}
+      <span class="underline underline-offset-4">{post.Title}</span>
+      <img src={arrow.src} class="w-3 h-3" alt="" />
     </a>
   ) : (
-    <a class="link">
-      <span class="icon">
-        🚫
-        <img src={arrow.src} class="icon-link" alt="Arrow icon of a page link" />
-      </span>
-      <span class="text not-found">Post not found</span>
-    </a>
+    <span class="inline-flex items-center gap-1.5 text-muted-foreground">
+      <span class="text-base leading-none">🚫</span>
+      <span>Post not found</span>
+      <img src={arrow.src} class="w-3 h-3" alt="" />
+    </span>
   )
 }
 

@@ -72,6 +72,12 @@ export default {
               fontWeight: '700',
               marginBottom: '0.75rem',
             },
+            h3: {
+              color: theme('colors.foreground'),
+              fontSize: '1.5rem',
+              fontWeight: '700',
+              marginBottom: '0.5rem',
+            },
             ul: {
               listStyleType: 'disc',
               paddingLeft: '1.5rem',
@@ -80,14 +86,11 @@ export default {
               },
             },
             a: {
-              textDecoration: 'none', // 下線を削除
-              '&:hover': {
-                textDecoration: 'underline', // ホバー時に下線を追加（必要に応じて）
-              },
+              textDecoration: 'none'
             },
             blockquote: {
-              borderLeftColor: theme('colors.gray.300'),
-              color: theme('colors.gray.700'),
+              borderLeftColor: theme('colors.border'),
+              color: theme('colors.muted.foreground'),
               paddingLeft: '1rem',
             },
             table: {

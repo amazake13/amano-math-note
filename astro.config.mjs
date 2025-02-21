@@ -47,4 +47,13 @@ export default defineConfig({
     FeaturedImageDownloader(),
     PublicNotionCopier(),
   ],
+  markdown: {
+    shikiConfig: {
+      themes: {
+        light: 'solarized-light',
+        dark: 'solarized-dark',
+      },
+      wrap: false,
+    },
+  }
 });

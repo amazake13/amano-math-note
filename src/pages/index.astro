@@ -1,0 +1,28 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import PostCard from '@/components/PostCard.astro'
+import type { Post } from '@/lib/interfaces'
+import { getAllPosts } from '@/lib/notion/client'
+
+const posts = await getAllPosts()
+const latestPosts = posts.slice(0, 3)
+---
+
+<Layout title="Home" path="/">
+  <div slot="main" class="container mx-auto px-4 py-8 animate-fade-in">
+    <section class="space-y-8">
+      <div class="flex items-center justify-between">
+        <h2 class="text-3xl font-bold">Latest Posts</h2>
+        <a
+          href="/posts"
+          class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          See all posts →
+        </a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {latestPosts.map((post: Post) => <PostCard post={post} />)}
+      </div>
+    </section>
+  </div>
+</Layout>

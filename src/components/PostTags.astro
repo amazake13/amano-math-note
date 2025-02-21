@@ -1,7 +1,7 @@
 ---
 import type { Post, SelectProperty } from '@/lib/interfaces.ts'
 import { getTagLink } from '@/lib/blog-helpers.ts'
-import '@/styles/notion-color.css'
+import { Badge } from '@/components/ui/badge'
 
 export interface Props {
   post: Post
@@ -9,21 +9,61 @@ export interface Props {
 }
 
 const { post, enableLink = true } = Astro.props
+
+const baseStyle = 'bg-[rgba(227,226,224,0.5)] text-[rgb(50,48,44)] border-none'
+const linkStyle = 'hover:bg-[rgba(227,226,224,0.8)] transition-colors'
+
+const getTagColorClass = (color: string) => {
+  switch (color) {
+    case 'gray':
+      return 'bg-muted hover:bg-muted/80'
+    case 'brown':
+      return 'bg-amber-100 hover:bg-amber-200/80'
+    case 'orange':
+      return 'bg-orange-100 hover:bg-orange-200/80'
+    case 'yellow':
+      return 'bg-yellow-100 hover:bg-yellow-200/80'
+    case 'green':
+      return 'bg-green-100 hover:bg-green-200/80'
+    case 'blue':
+      return 'bg-blue-100 hover:bg-blue-200/80'
+    case 'purple':
+      return 'bg-purple-100 hover:bg-purple-200/80'
+    case 'pink':
+      return 'bg-pink-100 hover:bg-pink-200/80'
+    case 'red':
+      return 'bg-red-100 hover:bg-red-200/80'
+    default:
+      return 'bg-muted hover:bg-muted/80'
+  }
+}
 ---
 
-<div class="post-tags">
+<div class="flex flex-wrap gap-2">
   {
     post.Tags &&
       post.Tags.length > 0 &&
       post.Tags.map((tag: SelectProperty) => {
         if (enableLink) {
           return (
-            <a href={getTagLink(tag.name)} class={`tag ${tag.color}`}>
-              {tag.name}
+            <a href={getTagLink(tag.name)} class="no-underline">
+              <Badge
+                variant="secondary"
+                class="bg-[rgba(227,226,224,0.5)] hover:bg-[rgba(227,226,224,0.8)] text-[rgb(50,48,44)] border-none transition-colors"
+              >
+                {tag.name}
+              </Badge>
             </a>
           )
         }
-        return <span class={`tag ${tag.color}`}>{tag.name}</span>
+        return (
+          <Badge
+            variant="secondary"
+            class="bg-[rgba(227,226,224,0.5)] text-[rgb(50,48,44)] border-none"
+          >
+            {tag.name}
+          </Badge>
+        )
       })
   }
 </div>

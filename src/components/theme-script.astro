@@ -1,0 +1,40 @@
+<script is:inline>
+    function getThemePreference() {
+        if (
+            typeof localStorage !== 'undefined' &&
+            localStorage.getItem('theme')
+        ) {
+            return localStorage.getItem('theme')
+        }
+        return window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light'
+    }
+
+    function updateTheme(theme) {
+        const root = document.documentElement
+        if (theme === 'dark') {
+            root.classList.add('dark')
+        } else {
+            root.classList.remove('dark')
+        }
+        localStorage.setItem('theme', theme)
+    }
+
+    // 初期テーマの設定
+    updateTheme(getThemePreference())
+
+    // システムのテーマ変更を監視
+    window
+        .matchMedia('(prefers-color-scheme: dark)')
+        .addEventListener('change', (e) => {
+            if (!localStorage.getItem('theme')) {
+                updateTheme(e.matches ? 'dark' : 'light')
+            }
+        })
+
+    // テーマ変更イベントのカスタムディスパッチャー
+    window.dispatchEvent(
+        new CustomEvent('theme-change', { detail: getThemePreference() })
+    )
+</script>

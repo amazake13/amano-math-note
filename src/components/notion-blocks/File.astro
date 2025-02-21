@@ -4,61 +4,55 @@ import { filePath } from '../../lib/blog-helpers'
 import Caption from './Caption.astro'
 
 export interface Props {
-  block: interfaces.Block
+  block: interfaces.Block & { File: interfaces.File }
 }
 
 const { block } = Astro.props
 
-let url: URL
+let url: URL | undefined
 try {
-  url = new URL(block.File?.External?.Url || block.File?.File?.Url)
+  const urlString = block.File?.External?.Url || block.File?.File?.Url
+  if (urlString) {
+    url = new URL(urlString)
+  }
 } catch (err) {
   console.error(`Invalid file URL. error: ${err}`)
 }
 
-const filename = decodeURIComponent(url.pathname.split('/').slice(-1)[0])
+const filename = url
+  ? decodeURIComponent(url.pathname.split('/').slice(-1)[0])
+  : ''
 ---
 
-<div class="file">
+<div class="my-2">
   <div>
     {
       url && (
         <a
-          href={block.File.External ? url.String() : filePath(url)}
+          href={block.File.External ? url.toString() : filePath(url)}
           target="_blank"
           rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground no-underline"
         >
-          <img
-            src="https://www.notion.so/icons/document_gray.svg"
-            alt="File icon in a file block"
-          />{' '}
-          {filename}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="shrink-0"
+          >
+            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+            <polyline points="14 2 14 8 20 8" />
+          </svg>
+          <span class="text-sm">{filename}</span>
         </a>
       )
     }
   </div>
   <Caption richTexts={block.File.Caption} />
 </div>
-
-<style>
-  .file {
-  }
-
-  .file a {
-    display: block;
-    padding: 0.5rem 0.2rem 0.4rem;
-    border-radius: var(--radius);
-    color: var(--fg);
-    font-weight: 500;
-    line-height: 1.4rem;
-  }
-  .file a:hover {
-    background-color: #eee;
-  }
-
-  .file a img {
-    width: 1.3rem;
-    height: 1.3rem;
-    vertical-align: sub;
-  }
-</style>

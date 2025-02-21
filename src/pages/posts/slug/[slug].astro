@@ -25,6 +25,8 @@ import PostRelativeLink from '@/components/PostRelativeLink.astro'
 import BlogPostsLink from '@/components/BlogPostsLink.astro'
 import BlogTagsLink from '@/components/BlogTagsLink.astro'
 import styles from '@/styles/blog.module.css'
+import { Image } from 'astro:assets'
+import PostCard from '@/components/PostCard.astro'
 
 export async function getStaticPaths() {
   const posts = await getAllPosts()
@@ -106,17 +108,66 @@ if (post.FeaturedImage && post.FeaturedImage.Url) {
   path={getPostLink(post.Slug)}
   ogImage={ogImage}
 >
-  <div slot="main" class="container mx-auto px-4 prose">
-    <div>
-      <PostDate post={post} />
-      <PostTags post={post} />
-      <PostTitle post={post} />
-      <PostBody blocks={blocks} />
-      <PostTags post={post} />
+  <div slot="main">
+    <article class="container mx-auto px-4 py-8">
+      <div class="max-w-3xl mx-auto">
+        <header class="mb-8">
+          <PostTitle post={post} />
+          <div class="flex items-center gap-4 mt-4 text-muted-foreground">
+            <PostDate post={post} />
+            <PostTags post={post} />
+          </div>
+        </header>
 
-      <footer>
-        <PostRelativeLink prevPost={prevPost} nextPost={nextPost} />
-      </footer>
-    </div>
+        <div
+          class="prose dark:prose-invert md:prose-lg prose-pre:bg-muted prose-pre:border prose-pre:border-border prose-img:my-0 mx-auto"
+        >
+          <PostBody blocks={blocks} />
+        </div>
+
+        <footer class="mt-16 pt-8 border-t">
+          <nav class="flex justify-between items-center">
+            {
+              prevPost && (
+                <a
+                  href={getPostLink(prevPost.Slug)}
+                  class="group flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <span class="text-lg">←</span>
+                  <span class="text-sm">{prevPost.Title}</span>
+                </a>
+              )
+            }
+            {
+              nextPost && (
+                <a
+                  href={getPostLink(nextPost.Slug)}
+                  class="group flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors ml-auto"
+                >
+                  <span class="text-sm">{nextPost.Title}</span>
+                  <span class="text-lg">→</span>
+                </a>
+              )
+            }
+          </nav>
+
+          {
+            postsHavingSameTag.length > 0 && (
+              <div class="mt-16">
+                <h2 class="text-xl font-bold mb-4">関連記事</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {postsHavingSameTag
+                    .filter((p) => p.Slug !== post.Slug)
+                    .slice(0, 2)
+                    .map((p) => (
+                      <PostCard post={p} />
+                    ))}
+                </div>
+              </div>
+            )
+          }
+        </footer>
+      </div>
+    </article>
   </div>
 </Layout>

@@ -1,0 +1,49 @@
+---
+import { cn } from '@/lib/utils'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import PostTags from '@/components/PostTags.astro'
+import type { Post } from '@/lib/interfaces'
+import { Image } from 'astro:assets'
+
+export interface Props {
+  post: Post
+}
+
+const { post } = Astro.props
+---
+
+<a href={`/posts/slug/${post.Slug}`} class="block group">
+  <Card
+    className={cn(
+      'h-full flex flex-col overflow-hidden transition-shadow duration-300 group-hover:shadow-lg'
+    )}
+  >
+    <div class="w-full h-48">
+      <Image
+        src={post.FeaturedImage?.Url || '/default-image.jpg'}
+        alt={post.Title}
+        width={400}
+        height={200}
+        class="w-full h-full object-cover"
+      />
+    </div>
+    <div class="px-6 pt-4 pb-2">
+      <PostTags post={post} enableLink={false} />
+    </div>
+    <CardHeader className="flex-1 space-y-2 pt-2 pb-6">
+      <CardTitle
+        className="line-clamp-2 text-xl group-hover:text-primary transition-colors"
+        >{post.Title}</CardTitle
+      >
+      <CardDescription className="line-clamp-2">
+        {post.Excerpt}
+      </CardDescription>
+    </CardHeader>
+  </Card>
+</a>

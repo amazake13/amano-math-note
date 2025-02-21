@@ -1,5 +1,5 @@
 ---
-import { Post } from '../lib/interfaces.ts'
+import { type Post } from '../lib/interfaces.ts'
 import { getDateStr } from '../lib/blog-helpers.ts'
 
 export interface Props {
@@ -9,13 +9,20 @@ export interface Props {
 const { post } = Astro.props
 ---
 
-<div class="post-date">
+<div class="flex items-center text-gray-600">
+  <!-- 時計のアイコン -->
+  <svg
+    class="w-4 h-4 mr-1"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+  </svg>
   {post.Date ? getDateStr(post.Date) : ''}
 </div>
-
-<style>
-  .post-date {
-    padding: 0 0 0.3rem;
-    font-size: 0.9rem;
-  }
-</style>

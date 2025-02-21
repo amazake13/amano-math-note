@@ -3,12 +3,8 @@ import type { Post, SelectProperty } from '@/lib/interfaces.ts'
 import { getRankedPosts, getAllTags, getAllPosts } from '@/lib/notion/client.ts'
 import Layout from '@/layouts/Layout.astro'
 import NoContents from '@/components/NoContents.astro'
-import PostDate from '@/components/PostDate.astro'
-import PostTags from '@/components/PostTags.astro'
-import PostTitle from '@/components/PostTitle.astro'
-import PostFeaturedImage from '@/components/PostFeaturedImage.astro'
-import PostExcerpt from '@/components/PostExcerpt.astro'
-import ReadMoreLink from '@/components/ReadMoreLink.astro'
+import PostCard from '@/components/PostCard.astro'
+import { Badge } from '@/components/ui/badge'
 import Pagination from '@/components/Pagination.astro'
 import '@/styles/notion-color.css'
 
@@ -29,7 +25,6 @@ export async function getStaticPaths({ paginate }) {
 
 const { tag } = Astro.params
 const { page } = Astro.props
-
 const { currentPage, lastPage } = page
 const currentTag =
   page.data && page.data[0]
@@ -43,32 +38,37 @@ const currentTag =
   title={`Posts in ${tag} ${currentPage}/${lastPage}`}
   path={`/posts/tag/${tag}/${currentPage}`}
 >
-  <div slot="main" class="container mx-auto px-4">
-    <header>
-      <div>
-        <span class={`tag ${currentTag ? currentTag.color : ''}`}>{tag}</span>
-      </div>
+  <div slot="main" class="container mx-auto px-4 py-8">
+    <header class="max-w-8xl mx-auto mb-8">
+      <Badge
+        variant="secondary"
+        className="bg-[rgba(227,226,224,0.5)] text-[rgb(50,48,44)] border-none text-lg px-4 py-2"
+      >
+        {tag}
+      </Badge>
     </header>
 
     {
       page.data ? (
-        page.data.map((post: Post) => (
-          <div>
-            <PostDate post={post} />
-            <PostTags post={post} />
-            <PostTitle post={post} />
-            <PostFeaturedImage post={post} />
-            <PostExcerpt post={post} />
-            <ReadMoreLink post={post} />
-          </div>
-        ))
+        <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-8xl mx-auto">
+          {page.data.map((post: Post) => (
+            <PostCard post={post} />
+          ))}
+        </div>
       ) : (
         <NoContents />
       )
     }
 
-    <footer>
-      {page.data ? <Pagination {...page} /> : null}
+    <footer class="mt-12">
+      <Pagination
+        currentPage={currentPage}
+        lastPage={lastPage}
+        url={{
+          prev: page.url.prev || '',
+          next: page.url.next || '',
+        }}
+      />
     </footer>
   </div>
 </Layout>

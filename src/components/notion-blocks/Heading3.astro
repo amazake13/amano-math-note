@@ -5,7 +5,7 @@ import RichText from './RichText.astro'
 import NotionBlocks from '../NotionBlocks.astro'
 
 export interface Props {
-  block: interfaces.Block
+  block: interfaces.Block & { Heading3: interfaces.Heading3 }
   headings: interfaces.Block[]
 }
 
@@ -16,30 +16,78 @@ const id = buildHeadingId(block.Heading3)
 
 {
   block.Heading3.IsToggleable ? (
-    <details class="toggle">
-      <summary>
-        <a href={`#${id}`} id={id}>
-          <h5>
+    <details class="group mt-5 sm:mt-4 scroll-mt-20" id={id}>
+      <summary class="cursor-pointer">
+        <div class="group/heading relative inline-block">
+          <h5 class="inline text-[1.25rem] sm:text-[1.1rem] text-foreground my-[0.3em]">
             {block.Heading3.RichTexts.map((richText: interfaces.RichText) => (
               <RichText richText={richText} />
             ))}
           </h5>
-        </a>
+          <a
+            href={`#${id}`}
+            class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover/heading:opacity-100 transition-opacity no-underline cursor-pointer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-muted-foreground hover:text-foreground"
+            >
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+            </svg>
+          </a>
+        </div>
       </summary>
-      <div>
+      <div class="ml-4">
         {block.Heading3.Children && (
-          <NotionBlocks blocks={block.Heading3.Children} headings={headings} />
+          <NotionBlocks
+            blocks={block.Heading3.Children}
+            headings={headings}
+            isRoot={false}
+            level={3}
+          />
         )}
       </div>
     </details>
   ) : (
-    <a href={`#${id}`} id={id}>
-      <h5>
+    <div
+      class="group/heading relative inline-block mt-5 sm:mt-4 scroll-mt-20"
+      id={id}
+    >
+      <h5 class="inline text-[1.25rem] sm:text-[1.1rem] text-foreground my-[0.3em]">
         {block.Heading3.RichTexts.map((richText: interfaces.RichText) => (
           <RichText richText={richText} />
         ))}
       </h5>
-    </a>
+      <a
+        href={`#${id}`}
+        class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover/heading:opacity-100 transition-opacity no-underline cursor-pointer"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="text-muted-foreground hover:text-foreground"
+        >
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+        </svg>
+      </a>
+    </div>
   )
 }
 

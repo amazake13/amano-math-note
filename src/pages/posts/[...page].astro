@@ -3,12 +3,7 @@ import { getAllPosts, getAllTags, getRankedPosts } from '@/lib/notion/client.ts'
 import type { Post } from '@/lib/interfaces'
 import Layout from '@/layouts/Layout.astro'
 import NoContents from '@/components/NoContents.astro'
-import PostDate from '@/components/PostDate.astro'
-import PostTags from '@/components/PostTags.astro'
-import PostTitle from '@/components/PostTitle.astro'
-import PostFeaturedImage from '@/components/PostFeaturedImage.astro'
-import PostExcerpt from '@/components/PostExcerpt.astro'
-import ReadMoreLink from '@/components/ReadMoreLink.astro'
+import PostCard from '@/components/PostCard.astro'
 import Pagination from '@/components/Pagination.astro'
 
 interface PaginateOptions {
@@ -35,12 +30,15 @@ interface Props {
     data: Post[]
     currentPage: number
     totalPages: number
+    url: {
+      prev: string | undefined
+      next: string | undefined
+    }
   }
 }
 
 const { page }: Props = Astro.props
-
-const { currentPage, totalPages } = page
+const { currentPage, totalPages, url } = page
 const [rankedPosts, tags] = await Promise.all([getRankedPosts(), getAllTags()])
 ---
 
@@ -48,25 +46,20 @@ const [rankedPosts, tags] = await Promise.all([getRankedPosts(), getAllTags()])
   title={`Posts ${currentPage}/${totalPages}`}
   path={`/posts/${currentPage}`}
 >
-  <div slot="main" class="container mx-auto px-4">
+  <div slot="main" class="container mx-auto px-4 py-8">
     {
       page.data ? (
-        page.data.map((post: Post) => (
-          <div class="max-w-2xl mx-auto my-8">
-            <PostDate post={post} />
-            <PostTags post={post} />
-            <PostTitle post={post} />
-            <PostFeaturedImage post={post} />
-            <PostExcerpt post={post} />
-            <ReadMoreLink post={post} />
-          </div>
-        ))
+        <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-8xl mx-auto">
+          {page.data.map((post: Post) => (
+            <PostCard post={post} />
+          ))}
+        </div>
       ) : (
         <NoContents />
       )
     }
 
-    <footer>
+    <footer class="mt-12">
       <Pagination {...page} />
     </footer>
   </div>
