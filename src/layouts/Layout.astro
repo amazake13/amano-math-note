@@ -60,16 +60,6 @@ if (database.Icon && database.Icon.Type === 'file') {
     <meta name="twitter:description" content={siteDescription} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={ogImage || siteOGImage} />
-    <link
-      rel="stylesheet"
-      href="/themes/prism-solarized-dark-atom.css"
-      media="(prefers-color-scheme: dark)"
-    />
-    <link
-      rel="stylesheet"
-      href="/themes/prism-solarized-light.css"
-      media="(prefers-color-scheme: light)"
-    />
   </head>
   <body class="min-h-screen bg-background text-foreground">
     <GoogleAnalytics trackingId={PUBLIC_GA_TRACKING_ID} />
@@ -80,7 +70,7 @@ if (database.Icon && database.Icon.Type === 'file') {
         <div class="flex h-16 items-center justify-between">
           <div class="flex flex-col justify-center">
             <a
-              href={getNavLink('/posts')}
+              href={getNavLink('/')}
               class="flex items-center gap-3 transition-colors hover:text-foreground/80"
             >
               {

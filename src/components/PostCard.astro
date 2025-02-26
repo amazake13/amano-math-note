@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/card'
 import PostTags from '@/components/PostTags.astro'
 import type { Post } from '@/lib/interfaces'
-import { Image } from 'astro:assets'
+import PostFeaturedImage from './PostFeaturedImage.astro'
 
 export interface Props {
   post: Post
@@ -25,13 +25,7 @@ const { post } = Astro.props
     )}
   >
     <div class="w-full h-48">
-      <Image
-        src={post.FeaturedImage?.Url || '/default-image.jpg'}
-        alt={post.Title}
-        width={400}
-        height={200}
-        class="w-full h-full object-cover"
-      />
+      <PostFeaturedImage post={post} />
     </div>
     <div class="px-6 pt-4 pb-2">
       <PostTags post={post} enableLink={false} />

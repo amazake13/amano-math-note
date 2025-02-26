@@ -26,7 +26,7 @@ const id = buildHeadingId(block.Heading1)
           </h3>
           <a
             href={`#${id}`}
-            class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover/heading:opacity-100 transition-opacity no-underline cursor-pointer"
+            class="absolute -left-10 top-1/2 -translate-y-1/2 opacity-0 group-hover/heading:opacity-100 transition-opacity no-underline cursor-pointer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -38,7 +38,7 @@ const id = buildHeadingId(block.Heading1)
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="text-muted-foreground hover:text-foreground"
+              class="mr-2 text-muted-foreground hover:text-foreground"
             >
               <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
               <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
@@ -59,7 +59,7 @@ const id = buildHeadingId(block.Heading1)
     </details>
   ) : (
     <div
-      class="group/heading relative inline-block mt-8 sm:mt-4 scroll-mt-20"
+      class="group/heading relative block mt-8 mb-4 sm:mt-4 scroll-mt-20"
       id={id}
     >
       <h3 class="inline text-[1.8rem] sm:text-[1.3rem] text-foreground my-[0.3em]">
@@ -93,7 +93,7 @@ const id = buildHeadingId(block.Heading1)
 
 <style>
   h3 {
-    margin: 1.1em 0 0.3em;
+    margin: 2em 0 0.5em;
     color: var(--fg);
     font-size: 1.8rem;
   }

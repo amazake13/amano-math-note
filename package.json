@@ -21,7 +21,7 @@
     "@astrojs/react": "^4.2.0",
     "@astrojs/rss": "^4.0.11",
     "@astrojs/tailwind": "^5.1.4",
-    "@notionhq/client": "^2.2.5",
+    "@notionhq/client": "^2.2.16",
     "@radix-ui/react-slot": "^1.1.1",
     "@supercharge/promise-pool": "^2.4.0",
     "astro": "^5.1.2",
@@ -67,7 +67,8 @@
     "eslint-plugin-astro": "^0.27.0",
     "nx": "15.5.3",
     "shadcn-ui": "^0.9.4",
-    "shiki": "^3.0.0"
+    "shiki": "^3.0.0",
+    "vite": "^6.2.0"
   },
   "nx": {
     "targets": {
