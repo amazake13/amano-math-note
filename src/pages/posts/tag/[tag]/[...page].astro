@@ -8,7 +8,33 @@ import { Badge } from '@/components/ui/badge'
 import Pagination from '@/components/Pagination.astro'
 import '@/styles/notion-color.css'
 
-export async function getStaticPaths({ paginate }) {
+interface PaginateOptions {
+  pageSize: number
+  params?: Record<string, any>
+}
+
+interface PaginatedPaths {
+  paths: Array<{ params: { page: string[]; tag: string } }>
+  fallback: boolean
+}
+
+interface GetStaticPathsContext {
+  paginate: (items: Post[], options: PaginateOptions) => PaginatedPaths
+}
+
+interface Props {
+  page: {
+    data: Post[]
+    currentPage: number
+    lastPage: number
+    url: {
+      prev: string | undefined
+      next: string | undefined
+    }
+  }
+}
+
+export async function getStaticPaths({ paginate }: GetStaticPathsContext) {
   const allTags = await getAllTags()
   const allPosts = await getAllPosts()
 
@@ -24,7 +50,7 @@ export async function getStaticPaths({ paginate }) {
 }
 
 const { tag } = Astro.params
-const { page } = Astro.props
+const { page } = Astro.props as Props
 const { currentPage, lastPage } = page
 const currentTag =
   page.data && page.data[0]
@@ -35,40 +61,39 @@ const currentTag =
 ---
 
 <Layout
-  title={`Posts in ${tag} ${currentPage}/${lastPage}`}
+  title={`Posts in ${tag} ${currentPage} / ${lastPage}`}
   path={`/posts/tag/${tag}/${currentPage}`}
 >
   <div slot="main" class="container mx-auto px-4 py-8">
-    <header class="max-w-8xl mx-auto mb-8">
-      <Badge
-        variant="secondary"
-        className="bg-[rgba(227,226,224,0.5)] text-[rgb(50,48,44)] border-none text-lg px-4 py-2"
-      >
-        {tag}
-      </Badge>
-    </header>
+    <section class="max-w-7xl mx-auto">
+      <div class="flex items-center justify-between mb-8">
+        <Badge
+          variant="secondary"
+          className="bg-[rgba(227,226,224,0.5)] text-[rgb(50,48,44)] border-none text-lg px-4 py-2"
+        >
+          {tag}
+        </Badge>
+      </div>
 
-    {
-      page.data ? (
-        <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-8xl mx-auto">
-          {page.data.map((post: Post) => (
-            <PostCard post={post} />
-          ))}
-        </div>
-      ) : (
-        <NoContents />
-      )
-    }
+      {
+        page.data ? (
+          <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {page.data.map((post: Post) => (
+              <PostCard post={post} />
+            ))}
+          </div>
+        ) : (
+          <NoContents />
+        )
+      }
 
-    <footer class="mt-12">
-      <Pagination
-        currentPage={currentPage}
-        lastPage={lastPage}
-        url={{
-          prev: page.url.prev || '',
-          next: page.url.next || '',
-        }}
-      />
-    </footer>
+      <footer class="mt-12">
+        <Pagination
+          currentPage={currentPage}
+          lastPage={lastPage}
+          url={page.url}
+        />
+      </footer>
+    </section>
   </div>
 </Layout>

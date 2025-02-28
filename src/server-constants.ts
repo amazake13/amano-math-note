@@ -5,10 +5,6 @@ import { loadEnv } from 'vite'
 const mode = process.env.NODE_ENV || 'development'
 const env = loadEnv(mode, process.cwd(), '')
 
-// デバッグ用のログ
-console.log('Mode:', mode)
-console.log('NOTION_API_SECRET from env:', env.NOTION_API_SECRET)
-
 export const NOTION_API_SECRET = env.NOTION_API_SECRET || ''
 export const DATABASE_ID = env.DATABASE_ID || ''
 
@@ -16,7 +12,7 @@ export const CUSTOM_DOMAIN = env.CUSTOM_DOMAIN || '' // <- Set your costom domai
 export const BASE_PATH = env.BASE_PATH || '' // <- Set sub directory path if you want. e.g. /docs/
 
 export const PUBLIC_GA_TRACKING_ID = env.PUBLIC_GA_TRACKING_ID
-export const NUMBER_OF_POSTS_PER_PAGE = 10
+export const NUMBER_OF_POSTS_PER_PAGE = 12
 export const REQUEST_TIMEOUT_MS = parseInt(
   env.REQUEST_TIMEOUT_MS || '10000',
   10

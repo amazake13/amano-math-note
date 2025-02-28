@@ -3,6 +3,7 @@ import * as interfaces from '../../lib/interfaces.ts'
 import { buildHeadingId } from '../../lib/blog-helpers.ts'
 import RichText from './RichText.astro'
 import NotionBlocks from '../NotionBlocks.astro'
+import { Link, ChevronRight } from 'lucide-astro'
 
 export interface Props {
   block: interfaces.Block & { Heading1: interfaces.Heading1 }
@@ -17,34 +18,25 @@ const id = buildHeadingId(block.Heading1)
 {
   block.Heading1.IsToggleable ? (
     <details class="group mt-8 sm:mt-4 scroll-mt-20" id={id}>
-      <summary class="cursor-pointer">
-        <div class="group/heading relative inline-block">
-          <h3 class="inline text-[1.8rem] sm:text-[1.3rem] text-foreground my-[0.3em]">
-            {block.Heading1.RichTexts.map((richText: interfaces.RichText) => (
-              <RichText richText={richText} />
-            ))}
-          </h3>
+      <summary class="cursor-text group/heading relative list-none [&::-webkit-details-marker]:hidden">
+        <h3 class="flex items-center">
           <a
             href={`#${id}`}
-            class="absolute -left-10 top-1/2 -translate-y-1/2 opacity-0 group-hover/heading:opacity-100 transition-opacity no-underline cursor-pointer"
+            class="absolute -left-6 flex items-center h-full opacity-0 group-hover/heading:opacity-100 transition-opacity no-underline cursor-pointer"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+            <Link
+              size={20}
               class="mr-2 text-muted-foreground hover:text-foreground"
-            >
-              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-            </svg>
+            />
           </a>
-        </div>
+          <ChevronRight
+            size={20}
+            class="inline-block mr-1 text-muted-foreground transition-transform group-open:rotate-90"
+          />
+          {block.Heading1.RichTexts.map((richText: interfaces.RichText) => (
+            <RichText richText={richText} />
+          ))}
+        </h3>
       </summary>
       <div class="ml-4">
         {block.Heading1.Children && (
@@ -62,69 +54,17 @@ const id = buildHeadingId(block.Heading1)
       class="group/heading relative block mt-8 mb-4 sm:mt-4 scroll-mt-20"
       id={id}
     >
-      <h3 class="inline text-[1.8rem] sm:text-[1.3rem] text-foreground my-[0.3em]">
+      <h3 class="flex items-center">
+        <a
+          href={`#${id}`}
+          class="absolute -left-6 flex items-center h-full opacity-0 group-hover/heading:opacity-100 transition-opacity no-underline cursor-pointer"
+        >
+          <Link size={20} class="text-muted-foreground hover:text-foreground" />
+        </a>
         {block.Heading1.RichTexts.map((richText: interfaces.RichText) => (
           <RichText richText={richText} />
         ))}
       </h3>
-      <a
-        href={`#${id}`}
-        class="absolute -left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover/heading:opacity-100 transition-opacity no-underline cursor-pointer"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="text-muted-foreground hover:text-foreground"
-        >
-          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-        </svg>
-      </a>
     </div>
   )
 }
-
-<style>
-  h3 {
-    margin: 2em 0 0.5em;
-    color: var(--fg);
-    font-size: 1.8rem;
-  }
-  @media (max-width: 640px) {
-    h3 {
-      font-size: 1.3rem;
-    }
-  }
-
-  .toggle {
-    margin: 2rem 0 0;
-  }
-  @media (max-width: 640px) {
-    .toggle {
-      margin: 1.4rem 0 0;
-    }
-  }
-
-  .toggle > summary {
-    cursor: pointer;
-  }
-
-  .toggle > summary > a {
-    display: inline;
-  }
-
-  .toggle > summary > a > h3 {
-    display: inline;
-  }
-
-  .toggle > div {
-    margin-left: 1em;
-  }
-</style>
